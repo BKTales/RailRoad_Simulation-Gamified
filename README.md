@@ -1,4 +1,4 @@
-# sem2-pi-24.25-g001-repo
+# Railroad Simulation
 
 > **⚠️ Academic Integrity and Legal Warning**
 > This repository contains a project developed for academic purposes during the Degree in Informatics Engineering (LEI) at ISEP. It is made public strictly for portfolio and skill demonstration purposes.
