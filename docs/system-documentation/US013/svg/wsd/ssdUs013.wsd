@@ -1,0 +1,41 @@
+@startuml
+
+title US013 Verify if a specific train can travel between two stations (SSD)
+
+autonumber
+actor Player
+
+activate Player
+	Player -> VerifyTripUI : Selects the action verify trip
+		activate VerifyTripUI
+		VerifyTripUI --> Player : Ask player for which of the scenario does he wants
+		Player -> VerifyTripUI : Give the scenario index
+		deactivate VerifyTripUI
+		VerifyTripUI --> Player : Ask player for which of the train types does he wants
+		activate VerifyTripUI
+		Player -> VerifyTripUI : Give the train type index
+
+		VerifyTripUI --> Player : Ask player if he want to verify the trip between 2 stations(1) or \n between stationTypes(2)
+		deactivate VerifyTripUI
+		Player -> VerifyTripUI : Give the wanted behaviour index
+		activate VerifyTripUI
+
+			alt 1
+				VerifyTripUI --> Player : Ask player for departure and arrival stations
+				Player -> VerifyTripUI : Give the departure and arrival stations
+			end
+
+			alt 2
+				VerifyTripUI --> Player : Ask player for how many types he want(1 - 3)
+				Player -> VerifyTripUI : Give how many types
+				loop manyTimes
+					VerifyTripUI --> Player : Ask player for which type he want(1 - 3)
+					Player -> VerifyTripUI : Give which types
+				end
+
+			end
+			VerifyTripUI --> Player : display the trip status
+		deactivate VerifyTripUI
+deactivate Player
+
+@enduml

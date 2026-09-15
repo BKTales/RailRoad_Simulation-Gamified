@@ -1,0 +1,77 @@
+@startuml
+
+title US013 Verify if a specific train can travel between two stations (SD)
+
+autonumber
+actor Player
+
+activate Player
+	Player -> VerifyTripUI : Selects the action verify trip
+		activate VerifyTripUI
+		VerifyTripUI --> Player : Ask player for which of the scenario does he wants
+		Player -> VerifyTripUI : Give the scenario index
+
+		VerifyTripUI --> VerifyTripController : getStationFile(whichScenario)
+			activate VerifyTripController
+			VerifyTripController --> VerifyTripUI: file
+			deactivate VerifyTripController
+		VerifyTripUI --> VerifyTripController : getLineFile(whichScenario)
+			activate VerifyTripController
+			VerifyTripController --> VerifyTripUI: file
+			deactivate VerifyTripController
+
+		VerifyTripUI --> Player : Ask player for which of the train types does he wants
+		deactivate VerifyTripUI
+		Player -> VerifyTripUI : Give the train type index
+
+		activate VerifyTripUI
+		VerifyTripUI -> VerifyTripController: getStations(stationfile)
+			activate VerifyTripController
+				VerifyTripController -> readCsv: getStations(stationFile)
+				activate readCsv
+				readCsv -> VerifyTripController: stations
+				deactivate readCsv
+			VerifyTripController --> VerifyTripUI: stations
+			deactivate VerifyTripController
+
+		VerifyTripUI --> Player : Ask player if he want to verify the trip between 2 stations(1) or \n between stationTypes(2)
+		deactivate VerifyTripUI
+		Player -> VerifyTripUI : Give the wanted behaviour index
+		activate VerifyTripUI
+
+			alt 1
+				VerifyTripUI --> Player : Ask player for departure and arrival stations
+				Player -> VerifyTripUI : Give the departure and arrival stations
+
+				VerifyTripUI -> VerifyTripController: (runTwoStations(depStation, arriStation, stations, typeOfTrain)
+				activate VerifyTripController
+				VerifyTripController -> VerifyTrip : verifyTripTwoStations(lineFile, station1, station2,  stations, trainType))
+				activate VerifyTrip
+					VerifyTrip --> VerifyTripController : tripStatus
+				deactivate VerifyTrip
+				VerifyTripController --> VerifyTripUI : tripStatus
+
+				deactivate VerifyTripController
+			end
+
+			alt 2
+				VerifyTripUI --> Player : Ask player for how many types he want(1 - 3)
+				Player -> VerifyTripUI : Give how many types
+				loop manyTimes
+					VerifyTripUI --> Player : Ask player for which type he want(1 - 3)
+					Player -> VerifyTripUI : Give which types
+				end
+				VerifyTripUI -> VerifyTripController: runStationTypes(stationTypes, stations, typeOfTrain)
+				activate VerifyTripController
+				VerifyTripController -> VerifyTrip : verifyTripStationType(lineFile, station1, station2,  stations, trainType))
+				activate VerifyTrip
+					VerifyTrip --> VerifyTripController : tripStatus
+				deactivate VerifyTrip
+				VerifyTripController --> VerifyTripUI : tripStatus
+				deactivate VerifyTripController
+			end
+			VerifyTripUI --> Player : display the trip status
+		deactivate VerifyTripUI
+deactivate Player
+
+@enduml

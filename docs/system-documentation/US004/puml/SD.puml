@@ -1,0 +1,266 @@
+@startuml
+title US004 - Create Scenario
+autonumber
+skinparam maxMessageSize 250
+
+actor "Editor" as User
+participant ":ScenarioCreationUI" as UI
+participant ":ScenarioCreationController" as Controller
+participant ":ScenarioCreationDTO" as DTO
+participant ":ScenarioCreationAssembler" as Assembler
+participant ":MapRepository" as MapRepo
+participant ":ScenarioRepository" as ScenarioRepo
+participant ":Restrictions" as Restrictions
+participant ":TimeRestrictions" as Time
+participant ":ProductRestrictions" as ProductRestrictions
+participant ":TechnologyRestriction" as Tech
+participant ":PortBehaviour" as Port
+participant ":Budget" as Budget
+participant ":Scenario" as Scenario
+
+User -> UI: run()
+activate UI
+
+UI -> UI: readScenarioName()
+activate UI
+User -> UI: provide name
+deactivate UI
+
+UI -> DTO: setScenarioName(name)
+activate DTO
+deactivate DTO
+
+UI -> UI: selectMap()
+activate UI
+UI -> Controller: getAllMapNames()
+activate Controller
+Controller -> MapRepo: getAllMapNames()
+activate MapRepo
+MapRepo --> Controller: mapNames
+deactivate MapRepo
+Controller --> UI: mapNames
+deactivate Controller
+
+UI -> User: display maps
+User -> UI: select map
+deactivate UI
+
+UI -> DTO: setAttachedMapName(mapName)
+activate DTO
+deactivate DTO
+
+UI -> UI: readBudget()
+activate UI
+User -> UI: provide amount
+UI -> DTO: setInitialBudget(amount)
+activate DTO
+deactivate DTO
+deactivate UI
+
+group Mandatory Time Restriction
+  UI -> User: request start year
+  activate UI
+  User -> UI: provide start
+  UI -> DTO: setStartYear(year)
+  activate DTO
+  deactivate DTO
+  deactivate UI
+
+  UI -> User: request end year
+  activate UI
+  User -> UI: provide end
+  UI -> DTO: setEndYear(year)
+  activate DTO
+  deactivate DTO
+  deactivate UI
+end
+
+loop until "Finish" selected
+  UI -> User: show restrictions menu
+  activate UI
+  User -> UI: select option
+  deactivate UI
+
+  alt Technology Restriction
+    UI -> User: display technologies
+    activate UI
+    User -> UI: select tech
+    deactivate UI
+
+    UI -> DTO: addTechnologyRestriction(tech)
+    activate DTO
+    deactivate DTO
+
+  else Product Restriction
+    UI -> Controller: getAvailableProductNames()
+    activate Controller
+    Controller --> UI: products
+    deactivate Controller
+
+    UI -> User: display products
+    activate UI
+    User -> UI: select product
+    deactivate UI
+
+    UI -> User: request production time
+    activate UI
+    User -> UI: provide time
+    deactivate UI
+
+    UI -> User: request multiplier
+    activate UI
+    User -> UI: provide multiplier
+    deactivate UI
+
+    UI -> DTO: addProductRestriction(product, time, multiplier)
+    activate DTO
+    deactivate DTO
+
+  else Port Behavior
+    UI -> Controller: getAvailableProductNames()
+    activate Controller
+    Controller --> UI: products
+    deactivate Controller
+
+    UI -> User: display products
+    activate UI
+    User -> UI: select imports
+    User -> UI: select export
+    deactivate UI
+
+    UI -> DTO: setPortBehavior(imports, export)
+    activate DTO
+    deactivate DTO
+
+  else Historical Restrictions
+    UI -> Controller: getPresetRestrictions()
+    activate Controller
+    Controller --> UI: presetNames
+    deactivate Controller
+
+    UI -> User: display historical presets
+    activate UI
+    User -> UI: select preset
+    deactivate UI
+
+    UI -> Controller: initiateHistoricalRestriction(choice)
+    activate Controller
+    Controller -> Restrictions: presetRestrictions(choice)
+    activate Restrictions
+    Restrictions --> Controller: restrictions
+    deactivate Restrictions
+    Controller --> UI: success
+    deactivate Controller
+  end
+end
+
+UI -> Assembler: createScenarioFromDTO(dto)
+activate Assembler
+
+Assembler -> Controller: createTimeRestriction(dto.startYear, dto.endYear)
+activate Controller
+Controller -> Restrictions: createTimeRestriction()
+activate Restrictions
+Restrictions -> Time: new(start,end)
+activate Time
+Time --> Restrictions: instance
+deactivate Time
+Restrictions --> Controller: timeRestriction
+deactivate Restrictions
+deactivate Controller
+
+alt has technology restrictions
+  Assembler -> Controller: createTechnologicalRestriction(dto.restrictedTechnologies)
+  activate Controller
+  Controller -> Restrictions: createTechnologicalRestriction()
+  activate Restrictions
+  Restrictions -> Tech: new(tech)
+  activate Tech
+  Tech --> Restrictions: instance
+  deactivate Tech
+  Restrictions --> Controller: techRestriction
+  deactivate Restrictions
+  deactivate Controller
+end
+
+alt has product restrictions
+  loop for each product restriction
+    Assembler -> Controller: addHistoricalRestriction(restriction)
+    activate Controller
+    Controller -> Restrictions: addHistoricalProductRestriction()
+    activate Restrictions
+    Restrictions -> ProductRestrictions: addProductRestriction()
+    activate ProductRestrictions
+    ProductRestrictions --> Restrictions:
+    deactivate ProductRestrictions
+    Restrictions --> Controller:
+    deactivate Restrictions
+    deactivate Controller
+  end
+end
+
+alt has port behavior
+  Assembler -> Controller: createPortBehaviour(dto.imports, dto.export)
+  activate Controller
+  Controller -> Restrictions: createPortBehaviour()
+  activate Restrictions
+  Restrictions -> Port: new(imports,export)
+  activate Port
+  Port --> Restrictions: instance
+  deactivate Port
+  Restrictions --> Controller: portBehaviour
+  deactivate Restrictions
+  deactivate Controller
+end
+
+Assembler -> Controller: setInitialBudget(dto.initialBudget)
+activate Controller
+Controller -> ScenarioRepo: setInitialBudget()
+activate ScenarioRepo
+ScenarioRepo -> Budget: new(amount)
+activate Budget
+Budget --> ScenarioRepo: instance
+deactivate Budget
+ScenarioRepo --> Controller: budget
+deactivate ScenarioRepo
+deactivate Controller
+
+Assembler -> Controller: createScenario(dto.scenarioName, dto.attachedMapName)
+activate Controller
+Controller -> MapRepo: getMap(attachedMapName)
+activate MapRepo
+MapRepo --> Controller: map
+deactivate MapRepo
+
+Controller -> ScenarioRepo: createScenario()
+activate ScenarioRepo
+ScenarioRepo -> Scenario: new(name, map, restrictions...)
+activate Scenario
+Scenario --> ScenarioRepo: instance
+deactivate Scenario
+ScenarioRepo --> Controller:
+deactivate ScenarioRepo
+deactivate Controller
+
+Assembler --> UI: success
+deactivate Assembler
+
+UI -> User: confirm save
+activate UI
+alt User confirms save
+  User -> UI: confirm
+  UI -> Controller: saveScenario()
+  activate Controller
+  Controller -> ScenarioRepo: getScenario()
+  activate ScenarioRepo
+  ScenarioRepo --> Controller: scenario
+  deactivate ScenarioRepo
+  Controller -> FileOutputStream: writeObject(scenario)
+  deactivate Controller
+else
+  User -> UI: cancel
+end
+deactivate UI
+
+deactivate UI
+@enduml

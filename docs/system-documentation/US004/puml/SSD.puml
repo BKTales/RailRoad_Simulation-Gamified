@@ -1,0 +1,68 @@
+@startuml
+title US004 - Create Scenario for a Selected Map
+
+actor Editor
+participant ":System" as System
+autonumber
+skinparam maxMessageSize 250
+
+' === Main Flow ===
+Editor -> System: Start scenario creation
+activate System
+System --> Editor: Request scenario name
+Editor -> System: Provide name
+
+System --> Editor: Display available maps
+Editor -> System: Select map
+
+System --> Editor: Request initial budget
+Editor -> System: Provide budget amount
+
+' === Restrictions Flow ===
+loop until "Finish" selected
+    System --> Editor: Display restrictions menu
+    Editor -> System: Select option (
+
+    alt Time restriction (REQUIRED)
+        System --> Editor: Request start year
+        Editor -> System: Provide start year
+        System --> Editor: Request end year
+        Editor -> System: Provide end year
+
+    else Product restriction
+        System --> Editor: Display product list
+        Editor -> System: Select product
+        alt Add production parameters
+            System --> Editor: Request time to produce
+            Editor -> System: Provide time
+            System --> Editor: Request multiplier
+            Editor -> System: Provide multiplier
+        else Mark unavailable
+            System -> System: Mark product unavailable
+        end
+
+    else Technology restriction
+        System --> Editor: Display technology list
+        Editor -> System: Select technologies to restrict
+
+    else Port Behavior
+        System --> Editor: Display product list
+        Editor -> System: Select imports
+        System --> Editor: Display product list
+        Editor -> System: Select export
+
+    else Historical Presets
+        System --> Editor: Display preset options
+        Editor -> System: Select preset
+        System -> System: Apply preset restrictions
+    end
+end
+
+' === Finalization ===
+Editor -> System: Confirm scenario creation
+System -> System: Validate complete DTO
+System -> System: Create domain objects
+System --> Editor: Display success message
+
+deactivate System
+@enduml

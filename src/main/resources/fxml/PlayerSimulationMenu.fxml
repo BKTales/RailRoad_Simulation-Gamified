@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="pt.ipp.isep.dei.application.UserMenus.PlayerSimulationMenuController"
+      prefHeight="800.0" prefWidth="1200.0"
+      styleClass="boxPlayer" stylesheets="@../css/playerSimulationMenu.css"
+      alignment="CENTER">
+
+    <VBox fx:id="buttonsPane" spacing="10" styleClass="left-pane" alignment="CENTER">
+        <Button fx:id="btn1" text="Button 1" styleClass="button"/>
+        <Button fx:id="btn2" text="Button 2" styleClass="button"/>
+        <Button fx:id="btn3" text="Button 3" styleClass="button"/>
+        <Button fx:id="btn4" text="Button 4" styleClass="button"/>
+    </VBox>
+</VBox>

@@ -1,0 +1,72 @@
+.root {
+    -fx-font-family: "Bronco";
+    -fx-font-size: 20px;
+}
+
+.box{
+    -fx-background-image: url('/images/woodText.png');
+    -fx-background-size: stretch;
+}
+
+log .content {
+    -fx-background-color: transparent;
+}
+
+/**/
+.log {
+    -fx-control-inner-background: #335e7c;
+    -fx-background-color: #335e7c;
+    -fx-text-fill: white;
+    -fx-border-width: 3px;
+    -fx-border-color: #e4aa50;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 6 6 6 6;
+    -fx-font-size: 14px;
+}
+
+/* Base button style */
+.button {
+    -fx-background-image: url('/images/btnBackground.png');
+    -fx-padding: 20 0 0 0;
+    -fx-background-size: stretch;
+    -fx-pref-width: 260px;
+    -fx-pref-height: 100px;
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0.5, 0, 1);
+}
+
+.button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.8), 10, 0.5, 0, 5);
+}
+
+/* Pressed effect */
+.button:pressed {
+    /*-fx-background-color: #2C5FA0;*/
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.8), 10, 0.5, 0, 5);
+}
+
+/* Optional: remove default focus border */
+.button:focused {
+    -fx-border-color: transparent;
+}
+
+.left-pane {
+    -fx-padding: 20;
+}
+
+.image-pane {
+    -fx-background-color: #1e1e1e;
+}
+
+.info-label {
+    -fx-background-color: #a17b7b;
+    -fx-text-fill: white;
+    -fx-padding: 5;
+}
+

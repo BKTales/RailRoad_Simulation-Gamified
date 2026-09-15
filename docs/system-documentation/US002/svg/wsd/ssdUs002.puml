@@ -1,0 +1,33 @@
+@startuml
+title US002 - Create an industry (SSD)
+
+autonumber
+actor Editor
+
+activate Editor
+	Editor -> CreateIndustryUI: Select create industry function
+	activate CreateIndustryUI
+		CreateIndustryUI -> CreateIndustryUI : readCoordinates()
+		CreateIndustryUI --> Editor : ask for the industry coordinates
+		deactivate CreateIndustryUI
+		Editor -> CreateIndustryUI: Give industry coordinates
+		activate CreateIndustryUI
+		CreateIndustryUI -> CreateIndustryUI : isToCreatePort()
+		CreateIndustryUI --> Editor : ask if the user wants to create a port
+		deactivate CreateIndustryUI
+		alt y
+		Editor -> CreateIndustryUI: yes
+		activate CreateIndustryUI
+			CreateIndustryUI -> CreateIndustryUI : createPort()
+		end
+
+		alt n
+		Editor -> CreateIndustryUI: no
+			activate CreateIndustryUI
+			CreateIndustryUI -> CreateIndustryUI : createIndustry()
+	end
+	CreateIndustryUI --> Editor: Industry created confirmation
+	deactivate CreateIndustryUI
+deactivate Editor
+
+@enduml

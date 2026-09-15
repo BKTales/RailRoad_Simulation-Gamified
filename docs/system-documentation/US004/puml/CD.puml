@@ -1,0 +1,171 @@
+@startuml
+title US004 - Scenario Creation
+
+left to right direction
+
+' ====== CORE COMPONENTS GROUP ======
+class ScenarioCreationDTO {
+    - scenarioName: String
+    - attachedMapName: String
+    - initialBudget: double
+    - startYear: int
+    - endYear: int
+    - restrictedTechnologies: List<TechnologyType>
+    - productRestrictions: List<ProductRestrictionDTO>
+    - importedProductsIndex: List<Integer>
+    - exportedProductIndex: Integer
+    + getters()
+    + setters()
+}
+
+class Scenario {
+    - name: String
+    - attachedMap: Map
+    - restrictions: Restrictions
+    - budget: Budget
+}
+
+class Budget {
+    - amount: double
+}
+
+' ====== UI LAYER GROUP ======
+class ScenarioCreationUI {
+    - controller: ScenarioCreationController
+    - currentDTO: ScenarioCreationDTO
+    + run()
+    + readScenarioName()
+    + selectMap()
+    + readBudget()
+    + addRestriction()
+}
+
+' ====== CONTROLLER LAYER GROUP ======
+class ScenarioCreationController {
+    - timeRestrictions: TimeRestrictions
+    - technologyRestriction: TechnologyRestriction
+    - productRestrictions: ProductRestrictions
+    - portBehaviour: PortBehaviour
+    - initialBudget: Budget
+    - restrictions: Restrictions
+    + createTimeRestriction(startYear: int, endYear: int)
+    + createTechnologicalRestriction(restricted: List<TechnologyType>)
+    + addHistoricalRestriction(productName: String, timeToProduce: int, multiplier: double)
+    + markProductAsUnavailable(productName: String)
+    + createPortBehaviour(importedProductsIndex: List<Integer>, exportedValueIndex: int)
+    + setInitialBudget(initialFunds: double)
+    + createScenario(name: String, attachedMapName: String)
+}
+
+class ScenarioCreationAssembler {
+    + createScenarioFromDTO(dto: ScenarioCreationDTO)
+    + convertToDTO(...): ScenarioCreationDTO
+    + saveScenario(scenario: Scenario)
+    + getAvailableProductNames(): List<String>
+    + validateDTO(dto: ScenarioCreationDTO)
+    + createProductRestrictionDTO(...): ProductRestrictionDTO
+}
+
+class ScenarioRepository {
+    + setInitialBudget(amount: double): Budget
+    + createScenario(name: String, map: Map, restrictions: Restrictions, budget: Budget): Scenario
+}
+
+class MapRepository {
+    + getAllMapNames(): List<String>
+    + getMap(name: String): Map
+}
+
+class Restrictions {
+    - name: String
+    - timeRestrictions: TimeRestrictions
+    - technologyRestriction: TechnologyRestriction
+    - productRestrictions: ProductRestrictions
+    - portBehaviour: PortBehaviour
+    + presetRestrictions(choice: String): Restrictions
+    + createTimeRestriction(startYear: int, endYear: int): TimeRestrictions
+    + createTechnologicalRestriction(restricted: List<TechnologyType>): TechnologyRestriction
+    + addHistoricalProductRestriction(productName: String, timeToProduce: int, multiplier: double)
+    + markProductAsUnavailable(productName: String)
+    + createPortBehaviour(importedProductsIndex: List<Integer>, exportedValueIndex: int): PortBehaviour
+}
+
+class TimeRestrictions {
+    - startYear: int
+    - endYear: int
+    + getStartYear(): int
+    + getEndYear(): int
+    + isValidYear(startYear: int, endYear: int): boolean
+}
+
+class TechnologyRestriction {
+    - techList: List<TechnologyType>
+    - unavailableProducts: List<String>
+    + getTechList(): List<TechnologyType>
+    + markAsUnavailable(productName: String)
+    + isProductAvailable(productName: String): boolean
+    + getUnavailableProducts(): List<String>
+}
+
+class ProductRestrictions {
+    - productRestrictions: Map<String, ProductRestriction>
+    + addProductRestriction(productName: String, timeToProduce: int, multiplier: double)
+    + removeProductRestriction(productName: String)
+    + getProductRestriction(productName: String): ProductRestriction
+    + getAllProductsWithRestrictions(): List<String>
+    + getProductRestrictionDTOList(): List<ProductRestrictionDTO>
+}
+
+class PortBehaviour {
+    - importedProducts: List<ProductType>
+    - exportedProduct: ProductType
+    + getImportedProducts(): List<ProductType>
+    + getExportedProduct(): ProductType
+}
+
+enum TechnologyType {
+  DIESEL
+  ELECTRIC
+  STEAM
+}
+
+enum ProductType {
+  GRAINS
+  ...
+  RUBBER
+}
+
+' ====== RELATIONSHIPS ======
+ScenarioCreationUI "1" --> "1" ScenarioCreationDTO : Creates/Updates:
+ScenarioCreationUI "1" --> "1" ScenarioCreationController : Communicates
+
+ScenarioCreationController "1" ..> "1" ScenarioCreationAssembler : Uses
+ScenarioCreationController "1" ..> "1" MapRepository : Queries
+ScenarioCreationController "1" ..> "1" ScenarioRepository : Persists
+
+ScenarioCreationAssembler "1" --> "1" ScenarioCreationDTO : Reads
+ScenarioCreationAssembler "1" --> "1" Restrictions : Creates
+ScenarioCreationAssembler "1" --> "1" Budget : Creates
+ScenarioCreationAssembler "1" --> "1" Scenario : Creates
+
+ScenarioRepository "1" --> "1" Scenario : Manages
+ScenarioRepository "1" --> "1" Budget : Creates
+
+Restrictions "1" --> "1" TimeRestrictions : Contains
+Restrictions "1" --> "1" TechnologyRestriction : Contains
+Restrictions "1" --> "1" ProductRestrictions : Contains
+Restrictions "1" --> "1" PortBehaviour : Contains
+
+ProductRestrictions "1" --> "1" ProductRestrictionDTO : Contains
+
+Scenario "1" --> "1" Map : References
+Scenario "1" --> "1" Restrictions : Contains
+Scenario "1" --> "1" Budget : References
+
+MapRepository "1" --> "0 ..." Map : Manages
+
+TechnologyRestriction "1" -> "..." TechnologyType : Uses
+PortBehaviour "1" -> "..." ProductType : Uses
+ProductRestrictions "1" -> "..." ProductType : Uses
+
+@enduml

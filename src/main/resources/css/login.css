@@ -1,0 +1,36 @@
+.root {
+    -fx-font-family: "Bronco";
+    -fx-font-size: 22px;
+}
+
+.box{
+    -fx-background-image: url('/images/woodText.png');
+    -fx-background-size: stretch;
+}
+
+.label {
+    -fx-text-fill: #ecf0f1;
+    -fx-font-weight: bold;
+}
+
+.text-field, .password-field {
+    -fx-text-fill: #000000;
+    -fx-border-color: #3498db;
+    -fx-border-width: 2;
+    -fx-background-insets: 0;
+}
+
+#messageLabel {
+    -fx-text-fill: red;
+}
+
+#loginButton {
+    -fx-background-color: linear-gradient(to bottom, #2980b9, #1c5980);
+    -fx-text-fill: #ecf0f1;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 4, 0.5, 0, 2);
+    -fx-max-width: 200px;
+    -fx-min-width: 150px;
+}

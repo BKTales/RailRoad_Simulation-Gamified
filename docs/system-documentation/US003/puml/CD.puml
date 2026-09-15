@@ -1,0 +1,173 @@
+@startuml
+
+class CityEditorUI {
+    - cityName: String
+    - houseBlocksQuantity: int
+    - cityX: int
+    - cityY: int
+    - houseBlockX: int
+    - houseBlockY: int
+    - maxQuantityPassenger: int
+    - maxQuantityMail: int
+    - productName: String
+    - houseBlocksPositionsTemp: List<Position>
+    - positioningMethod: int
+    - currentHouseBlockIndex: int
+    - city: City
+    - controller: CityEditorController
+    --
+    + run(): void
+    - readCityName(): void
+    - readCityX(): void
+    - readCityY(): void
+    - readHouseBlocksQuantity(): void
+    - readPositioningMethod(): void
+    - readHouseBlockX(): void
+    - readHouseBlockY(): void
+    - generateHouseBlocksAutomatically(): void
+    - finalizeCreateCity(): void
+    - readMaxPassengers(): void
+    - readMaxMail(): void
+    - readProduct(): void
+    - createCity(): void
+    - isValidCityName(name: String): boolean
+}
+
+class CityEditorController {
+    - houseBlocksList: List<HouseBlock>
+    - simulator: Simulator
+    - locationRepo: LocationRepository
+    --
+    + createCityBlock(city: City, x: int, y: int): void
+    + createCity(name: String, position: Position, maxPassengers: int, maxMail: int, product: ProductType): City
+    + deleteFailedHouseBlocks(failedPositions: List<Position>): void
+    + createHouseBlockList(city: City): void
+    + printHouseBlockList(): void
+    + getProductByName(name: String): ProductType
+    + getAvailableProducts(): String
+}
+
+class HouseBlock {
+    - position: Position
+    - location: Location
+    - simulator: Simulator
+    --
+    + addPosition(x: int, y: int): void
+    + getPosition(): Position
+}
+
+class Simulator {
+    - instance: Simulator
+    - currentScenario: Scenario
+    - currentMap: Map
+    --
+    + getInstance(scenario: Scenario): Simulator
+    + getInstance(): Simulator
+    + getCurrentMap(): Map
+    + getCurrentScenario(): Scenario
+    + getLocationRepository(): LocationRepository
+    + getCityRepository(): CityRepository
+    + getSimulation(): Simulation
+}
+
+class LocationRepository {
+    - m_locations: ArrayList<Location>
+    --
+    + deleteLocation(position: Position): void
+    + getLocations(): ArrayList<Location>
+    + getLocation(x: int, y: int): Location
+    + getLocation(position: Position): Location
+    + isEmptyLocation(position: Position): boolean
+    + addLocation(location: Location): void
+    + clean(): void
+}
+
+class City {
+    - simulator: Simulator
+    - name: String
+    - id: String
+    - houseBlocksList: List<HouseBlock>
+    - location: Location
+    - maxPassengers: int
+    - maxMail: int
+    - index: int
+    --
+    + City(name: String, location: Location, maxPassengers: int, maxMail: int, product: ProductType)
+    - generatePassenger(): void
+    - generateMail(): void
+    - generateProduct(): void
+    + getName(): String
+    + updateStartTimePause(pauseTime: long): void
+    + getHouseBlocks(): List<HouseBlock>
+    + createHouseBlockList(): void
+    + createHouseBlock(x: int, y: int): void
+    + getPosition(): Position
+    + getIndex(): int
+    + updateStatus(deltaTime: long): void
+    + produce(): String
+}
+
+class CityRepository {
+    - cities: ArrayList<City>
+    --
+    + CityRepository()
+    + deleteCity(name: String): void
+    + getCities(): ArrayList<City>
+    + listAllCities(): String
+    + clean(): void
+    + addCity(city: City): void
+}
+
+class Map {
+    - length: int
+    - height: int
+    - name: String
+    - locationRepository: LocationRepository
+    --
+    + Map(name: String, length: int, height: int, scale: int)
+    + createLocation(position: Position): Location
+    + createCity(name: String, location: Location, maxPassengers: int, maxMail: int, consumedProduct: ProductType): City
+    + getlocationRepository(): LocationRepository
+}
+
+enum ProductType {
+    GRAINS
+    VEGETABLES
+    COFFEE
+    RUBBER
+    WOOL
+    IRON
+    COAL
+    STEEL
+    BREAD
+    CAR
+    CLOTHING
+    PEOPLE
+    MAIL
+    --
+    + productValue: double
+    + productName: String
+    + ProductType(value: int, name: String, time: int)
+}
+
+class Location {
+    + Location(position: Position)
+    + getPosition(): Position
+    + equals(obj: Object): boolean
+    + compareTo(o: Location): int
+}
+
+CityEditorUI --> CityEditorController: Communicates
+CityEditorController --> ProductType: Delegates to show values
+CityEditorController --> Map: Delegates to creation
+Map --> City: Creates
+Map --> CityRepository: Stores cities
+Map --> Location: Creates
+Location --> LocationRepository: Stores locations
+Map --> LocationRepository: Owns
+Simulator --> CityRepository: Stores
+CityEditorController --> City: Delegates to creation
+City --> HouseBlock: Creates
+
+
+@enduml

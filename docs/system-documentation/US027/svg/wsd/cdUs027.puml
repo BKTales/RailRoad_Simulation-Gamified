@@ -1,0 +1,35 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+class ShortestWayUI{
+
+}
+
+class ShortestWayController{
+- stations : string []
+- stationsConnections : [][]
+
++ getShortestWay(stationIndexes : int []) : String
++ listStations(filename : String) : String
+}
+
+class ShortestWay{
+- stationIndexes : int[]
+- stations : int[][]
+
++ getShortestWay(stationIndexes : int[], stations : int[][]) : String
+}
+
+class readCsvs{
+  + readCSVTo2DArray(file) : String[][]
+  + readCSVTo2DArrayForTypes(file, types) : String[][]
+  + getAllStations(stationFile) : String[]
+  + getAllStationsOfTypes(stationFile, types) : String[]
+}
+
+ShortestWayUI --> ShortestWayController
+ShortestWayController --> ShortestWay
+ShortestWay --> readCsvs : uses
+
+
+@enduml

@@ -1,0 +1,186 @@
+@startuml
+title US002 - Create and industry
+
+class IndustryRepository {
+  - industries : Array of Industry
+
+  + createPort() : Industry
+  + createIndustry(product : Product) : Industry
+}
+
+abstract class Industry {
+  # Product : Product
+  # Location : Location
+  # timeToEnd : Int
+  # timeStart : Int
+  # maxProduction : Int
+  # timeToProduce : Int
+  # producedQuantity : Int
+  # sector : IndustrySector
+  # type : IndustryType
+
+  + getSector() : sector
+  + getProduct() :product
+  + getLocation() : location
+  + getProducedQuantity() : int
+  + setTimeToEnd()
+  + startProducing()
+  + toString() : String
+  + equals(obj: Object) : bool
+}
+
+class PrimaryIndustry extends Industry{
+}
+
+class TransformingIndustry extends Industry{
+  - productToConsume : ConsumedProducts
+}
+
+class Port extends Industry{
+  - importedProducts : list of Products
+  - productToConsume : ConsumedProducts
+}
+
+enum IndustryType{
+  FARM
+  MINE
+  BAKERY
+  STEEL_MEAL
+  TEXTILE
+  AUTOMOBILE
+  PORT
+
+  + toString()
+}
+
+enum IndustrySector{
+  PRIMARY SECTOR
+  TRANSFORMING SECTOR
+  MIXED INDUSTRIES
+
+  + toString()
+}
+
+enum Product{
+  WOOL
+  RUBBER
+  COOFFEE
+  VEGETABLES
+  BAUXITE
+  NITRATE
+  COAL
+  IRON
+  BREAD
+  CAR
+  CLOTHING
+  STEEL
+
+  - productValue : double
+  - productName : String
+  + changeProductValue(multiplier : double) : void
+  + getProductValue() : double
+  + getProductName() : String
+  + toString() : String
+}
+
+class Scenario{
+  - portBehaviour : PortBehaviour
+  - currentMap : Map
+  - industryRepository : IndustryRepository
+  - locationRepository : LocationRepository
+
+  + getPortBehaviour : PortBehaviour
+  + getLocationRepository : LocationRepository
+  + getIndustryRepository : IndustryRepository
+}
+
+class Position{
+  - x : int
+  - y : int
+
+  + getX() : int
+  + getY() : int
+}
+
+class Location{
+  - pos : Position
+
+  + isEmptyLocation(position Position) : bool
+}
+
+class LocationRepository{
+  - m_locations : Array of Location
+
+  + createLocation(position : Position) : Location
+  - isEmptyLocation(position : Position) : boolean
+}
+
+class Simulator {
+  - instance : Simulator
+  - currentScenario : Scenario
+
+  + getInstance() : Repostiory
+  - getCurrentScenario() : Scenario
+  + getIndustryRepository(): IndustryRepository
+  - getLocationRepository() : LocationRepository
+}
+
+class CreateIndustryUI{
+  - product : Product
+  - option : String
+  - x : int
+  - y : int
+
+  + run()
+  - displayMessage(message : String) : void
+  - isToCreatePort() : void
+  - listProducts() : void
+  - readCoordinates() : void
+}
+
+class CreateIndustryController{
+  - industryRepo : IndustryRepository
+  - locationRepo : LocationRepository
+  - currentScenario : Scenario
+  - location : Location
+
+  + getListOfProducts : String
+  + getRepositories : void
+  + createIndustry : Industry
+  + createPort : Industry
+
+  - getRepositories() : void
+  - getLocationRepository() : LocationRepository
+  - getIndustryRepository() : IndustryRepository
+  - getCurrentScenario() : Scenario
+}
+
+class Map{
+    - createLocation(position) : Location
+}
+
+Location "1" *-- "1" Position
+Industry "1" *-- "1" Location
+Industry "1" o-- "1" Product
+Industry "1" o-- "1" IndustryType
+Industry "1" o-- "1" IndustrySector
+
+CreateIndustryUI ..> CreateIndustryController : uses
+
+CreateIndustryController ..> Simulator : "access"
+CreateIndustryController ..> IndustryRepository : "access"
+CreateIndustryController ..> LocationRepository : "access"
+
+Scenario "1" --> "1" LocationRepository : stores
+Scenario "1" --> "1" IndustryRepository : stores
+Scenario "1" --> "1" Industry : creates
+Scenario "1" --> "1" Map : stores
+Simulator "1" --> "1" Scenario : stores
+
+
+LocationRepository "1" --> "0..*" Location : stores
+IndustryRepository "1" --> "0..*" Industry : stores
+Scenario --> Industry : Creates
+
+Map --> Location : Creates
+@enduml

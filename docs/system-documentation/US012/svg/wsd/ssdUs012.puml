@@ -1,0 +1,13 @@
+@startuml
+
+title US012 - create a simulator (SSD)
+
+autonumber
+actor Player
+activate Player
+	Player -> PlayerMenuUI: Play/Pause simulation
+	activate PlayerMenuUI
+	PlayerMenuUI --> Player: Display simulation status
+	deactivate PlayerMenuUI
+
+@endum

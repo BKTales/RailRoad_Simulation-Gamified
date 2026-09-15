@@ -1,0 +1,54 @@
+@startuml
+title US001 - Create Map
+
+class Map {
+  - length : int
+  - height : int
+  - name : String
+  - scale : int
+
+  + Map(name: String, height: int, length: int, sclae : int) : Map
+}
+
+class MapRepository {
+  - List<Map> maps
+
+  + createMap(name: String, height: int, length: int): Map
+  - isOtherMapWithName(name : String) : boolean
+}
+
+class CreateMapUI {
+  - mapName : String
+  - height : int
+  - length : int
+  - scale : int
+
+  + run() : void
+  - readName(): void
+  - readLength(): void
+  - readHeight(): void
+  - isValidInt(value : int): boolean
+  - isValidCharacters(): boolean
+}
+
+class CreateMapController {
+
+  + createMap(name: String, height: int, length: int): Map
+}
+
+class Simulator {
+  - instance : Simulator
+  - mapRepository : MapRepository
+
+  + getInstance() : Simulator
+  + createMap(): Map
+}
+
+CreateMapUI ..> CreateMapController : communicates
+CreateMapController ..> Simulator : delegates to
+
+MapRepository "1" --> "0..*" Map : stores
+Simulator "1" --> "1" MapRepository : stores
+Simulator -->  Map : creates
+
+@enduml

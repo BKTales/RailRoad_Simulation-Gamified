@@ -1,0 +1,112 @@
+@startuml
+title US002 - Create an industry (SD)
+
+autonumber
+actor Editor
+
+activate Editor
+	Editor -> CreateIndustryUI: Select create industry function
+	activate CreateIndustryUI
+		CreateIndustryUI -> CreateIndustryUI : readCoordinates()
+		CreateIndustryUI --> Editor : ask for the industry coordinates
+		deactivate CreateIndustryUI
+
+		Editor -> CreateIndustryUI: Give industry coordinates
+		activate CreateIndustryUI
+        		CreateIndustryUI --> CreateIndustryController : getRepositories()
+
+        		activate CreateIndustryController
+        			CreateIndustryController -> Simulator : getInstance()
+        			activate Simulator
+        				Simulator --> CreateIndustryController : simulator
+        			deactivate Simulator
+        			CreateIndustryController -> "simulator:Simulator" : getCurrentScenario()
+        			activate "simulator:Simulator"
+        				"simulator:Simulator" --> CreateIndustryController : currentScenario
+        			deactivate "simulator:Simulator"
+        			CreateIndustryController -> Scenario : getCurrentMap()
+        			activate Scenario
+        				Scenario --> CreateIndustryController : currentMap
+        			deactivate Scenario
+
+        			CreateIndustryController -> Map : createLocation(position)
+        			activate Map
+        				Map  --> Map : isEmptyPosition(position)
+        				Map -> Location : createLocation(pos)
+        				activate Location
+        				Location --> Map : location
+        				deactivate Location
+        			Map  --> CreateIndustryController : location
+        			deactivate Map
+        			CreateIndustryController  --> CreateIndustryUI : location
+		CreateIndustryUI -> CreateIndustryUI : isToCreatePort()
+		CreateIndustryUI --> Editor : ask if the user wants to create a port
+		deactivate CreateIndustryUI
+
+		alt y
+		    Editor -> CreateIndustryUI: yes
+            activate CreateIndustryUI
+    		CreateIndustryUI -> CreateIndustryController   : createPort()
+			CreateIndustryController --> Scenario : getPortBehaviour()
+			activate "Scenario"
+				Scenario -> CreateIndustryController : PortBehaviour()
+			deactivate "Scenario"
+
+			CreateIndustryController -> Scenario : CreatePort(portBehaviour, location)
+			activate Scenario
+
+				Scenario -> Industry : createPort(consumedProducts, producedProduct, location)
+                	activate Industry
+                		Industry --> Scenario : port
+                	deactivate Industry
+                	    Scenario -> IndustryRepository : addPort(port)
+                	activate IndustryRepository
+                	    IndustryRepository  --> Scenario
+                	deactivate IndustryRepository
+                	    Scenario --> CreateIndustryController : port
+                	deactivate Scenario
+                	CreateIndustryController --> CreateIndustryUI :port
+                deactivate CreateIndustryController
+		end
+
+
+		alt
+		    Editor -> CreateIndustryUI: no
+            activate CreateIndustryUI
+			CreateIndustryUI -> CreateIndustryController   : listProducts()
+			activate CreateIndustryController
+			CreateIndustryController -> Scenario : getListOfAvailableProducts()
+			activate Scenario
+				Scenario --> CreateIndustryController : List of available products
+			deactivate Scenario
+			CreateIndustryController --> CreateIndustryUI : List of available products
+			deactivate CreateIndustryController
+		deactivate CreateIndustryController
+
+			CreateIndustryUI --> Editor: Display the products available to be produced \n and ask the user which one he wants
+			Editor -> CreateIndustryUI: Select product to be produced
+			CreateIndustryUI -> CreateIndustryController : CreateIndustry(product, position)
+
+		activate CreateIndustryController
+			CreateIndustryController -> Scenario : CreateIndustry(product, location)
+			activate Scenario
+			Scenario -> Scenario : getIndustryType(product)
+			Scenario -> Scenario : getSector(product)
+			Scenario -> Industry : createIndustry(type, product, location)
+				activate Industry
+				Industry --> Scenario : industry
+				deactivate Industry
+			    Scenario -> IndustryRepository : addIndustry(industry)
+				activate IndustryRepository
+			    IndustryRepository  --> Scenario
+				deactivate IndustryRepository
+			Scenario --> CreateIndustryController : industry
+			deactivate Scenario
+			CreateIndustryController --> CreateIndustryUI :industry
+		deactivate CreateIndustryController
+	end
+	CreateIndustryUI --> Editor: Industry created confirmation
+	deactivate CreateIndustryUI
+deactivate Editor
+
+@enduml

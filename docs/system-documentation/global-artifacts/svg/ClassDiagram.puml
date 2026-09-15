@@ -1,0 +1,976 @@
+@startuml
+
+class Scenario {
+
+-name: String
+-attachedMap: Map
+-timeRestrictions: TimeRestrictions
+-historicalRestrictions: ProductRestrictions
+-technologyRestriction: TechnologyRestriction
+-portBehaviour: PortBehaviour
+-initialBudget: Budget
+-budget: Budget
+-industryRepository: IndustryRepository
+-trainRepository: TrainRepository
+-stationRepository: StationRepository
+-railwaylineRepository: RailwaylineRepository
+-routeRepository: RouteRepository
+-tripRepository: TripRepository
+-influenceAreaRepository: InfluenceAreaRepository
+-cityRepository: CityRepository
+
++ Scenario(name: String, attachedMap: Map, timeRestrictions: TimeRestrictions, historicalRestrictions: ProductRestrictions, technologyRestriction: TechnologyRestriction, portBehaviour: PortBehaviour, budget: Budget)
++ startRepos(): void
++ createTrain(model: LocomotiveModel): Train
++ createIndustry(productType: ProductType, location: Location): Industry
++ createPort(location: Location): Port
++ createStation(name: String, stationType: String, location: Location, cardinalPosition: String, maxHeight: int, maxLength: int): StationType
++ createRailwayLine(station1: StationType, station2: StationType, trackType: String, lineType: String, distance: Double): RailwayLine
++ passDataFromStation(station: StationType, maxHeight: int, maxLength: int, upgrade: String, cardinalPosition: String): void
++ setObjetcsInArea(station: StationType): void
++ purchaseLocomotive(model: LocomotiveModel): Train
++ nearestCityNames(x: int, y: int): String
++ convertToTechnologyType(type: LocomotiveType): TechnologyType
++ shortestDistance(p: Position): String
+}
+
+class Simulator {
+-  instance: Simulator
+ - scenarioRepository: ScenarioRepository
+ - mapRepository: MapRepository
+ - authenticationRepository: AuthenticationRepository
+ - Simulator()
+ + static getInstance(): Simulator
+ + static setInstance(sim: Simulator):
+ + createMap(name: String, height: int, length: int, scale: int): Map
+ + createMap(map: Map): Map
+ - isNameUnique(mapName: String): boole
+ + createScenario(name: String, attachedMap: Map, timeRestrictions: TimeRestrictions,
+                  historicalRestrictions: HistoricalRestrictions, technologyRestriction: TechnologyRestriction,
+                  portBehaviour: PortBehaviour, budget: Budget): Scenario
+ + createScenario(scenario: Scenario):
+ + getScenarioRepository(): ScenarioRepository
+ + getMapRepository(): MapRepository
+ + getAuthenticationRepository(): AuthenticationRepository
+}
+
+class StationRepository {
+
+- stations: ArrayList<StationType>
+
++ StationRepository()
++ getAvailableUpgradeStation(station: StationType): String
++ setObjetcsInArea(station: StationType, objetcsInArea: Map<Position, Object>): void
++ deleteStation(pos: Position): void
++ deleteStation(station: StationType): void
++ getStation(name: String): StationType
++ getStation(index: int): StationType
++ getStationInfo(index: int): String
++ getStations(): ArrayList<StationType>
++ getListOfStationTypes(): String
++ addStation(station: StationType): void
++ listAllStations(): String
++ findByMap(mapName: String): StationType
++ clean(): void
++ getStationsInfo(): String[]
+
+}
+
+class TrainRepository {
+- trains: List<Train>
+- id: int [static] = 1
+
++ TrainRepository()
++ deleteTrain(t: Train): void
++ getTrain(index: int): Train
++ getNewID(): int
++ listTrains(): String
++ getTrainsInfo(): String[]
++ getTrains(): List<Train>
++ clean(): void
++ addTrain(train: Train): void
+
+
+class TripRepository {
+- trips: List<Trip>
+
++ TripRepository()
++ createAndSaveTrip(train: Train, origin: StationType, destination: StationType, railwayLine: RailwayLine, cargoList: List<Cargo>, cargoMode: CargoMode, status: TripStatus): Trip
++ getAllTrips(): List<Trip>
++ clean(): void
+
+}
+
+class ScenarioRepository {
+
+- scenarios: List<Scenario>
+- activeScenario: Scenario
+
++ ScenarioRepository()
++ getScenariosSize(): int
++ getScenario(name: String): Scenario
++ getScenarios(): List<Scenario>
++ setInitialBudget(funds: double): Budget
++ printScenarios(): void
++ printAvailableScenariosForMap(map: Map): void
++ setActiveScenario(name: String): Scenario
++ getActiveScenario(): Scenario
++ getScenariosNames(): List<String>
+
+}
+class RouteRepository {
+
+- routes: List<Route>
+
++ createAndSaveRoute(trips: List<Trip>): void
++ getAllRoutes(): List<Route>
++ getRouteByIndex(index: int): Route
++ isRouteListEmpty(): boolean
++ clean(): void
++ getRoutesInfo(): String[]
+
+}
+
+class IndustryRepository {
+- industries: List<Industry>
+
++ IndustryRepository()
++ getIndustries(): ArrayList<Industry>
++ deleteIndustry(l: Position): void
++ getActivePortsStatus(): String
++ getIndustry(l: Position): Industry
++ getIndustry(index: int): Industry
++ listIndustries(): String
++ getIndustryType(product: ProductType): IndustryType
++ addPort(port: Port): void
++ addIndustry(industry: Industry): void
++ clean(): void
+}
+
+class CityRepository {
+
+- cities: ArrayList<City>
+
++ CityRepository()
++ deleteCity(name: String): void
++ getCities(): ArrayList<City>
++ listAllCities(): String
++ clean(): void
++ addCity(city: City): void
+
+}
+
+class RailwaylineRepository {
+
+- rails: ArrayList<RailwayLine>
+
++ RailwaylineRepository()
++ deleteRailwayLine(index: int): void
++ deleteRailwayLine(rl: RailwayLine): void
++ getListOfAvailableRailwayLineTypes(currentYear: int): String
++ getListOfRailwayTrackTypes(): String
++ getRails(): ArrayList<RailwayLine>
++ listRailwayLines(): String
++ alreadyExists(station1: StationType, station2: StationType): boolean
++ getRailwayLineBetween(a: StationType, b: StationType): RailwayLine
++ addRailwayLine(rl: RailwayLine): void
++ clean(): void
+
+}
+
+
+class LocationRepository {
+- m_locations: ArrayList<Location>
+
++ LocationRepository()
++ deleteLocation(pos: Position): void
++ getLocations(): ArrayList<Location>
++ getLocation(x: int, y: int): Location
++ getLocation(p: Position): Location
++ isEmptyLocation(position: Position): boolean
++ addLocation(location: Location): void
++ clean(): void
+}
+
+class MapRepository {
+
+- maps: ArrayList<Map>
+
++ MapRepository()
++ deleteMap(map: Map): void
++ deleteMap(name: String): void
++ getMap(name: String): Map
++ getAllMaps(): ArrayList<Map>
++ getAllMapNames(): ArrayList<String>
++ printMaps(): void
++ getMaps(): Map
++ isEmpty(): boolean
+
+}
+
+
+
+class InfluenceAreaRepository {
+- influenceAreas: ArrayList<InfluenceArea>
+
++ createInfluenceArea(name: String, height: int, length: int): InfluenceArea
++ deleteInfluenceArea(name: String): void
++ getInfluenceArea(name: String): InfluenceArea
++ getInfluenceArea(): ArrayList<InfluenceArea>
++ clean(): void
+
+}
+
+
+abstract class Industry {
+
+- CREATION: int = 0 [final]
+- timeToProduce: int
+- maxProduction: int
+- producedQuantity: int
+- productionStartTime: long
+- isProducing: boolean
+- product: Product
+- location: Location
+- type: IndustryType
+- sector: IndustrySector
+
++ Industry(product: Product, type: IndustryType, location: Location, timeToProduce: int, maxProduction: int)
++ startProducing(currentTime: int): String [abstract]
++ updateProduction(currentTime: long): String [abstract]
++ adjustForPause(pauseDurationMs: long): void
++ hasQuantity(quantity: int): boolean
++ getSector(): IndustrySector
++ getLocation(): Location
++ getProduct(): Product
++ getProductType(): ProductType
++ getProducedQuantity(): int
++ getType(): IndustryType
++ setTimeToEnd(): void
++ updateStartTimePause(timeDiff: long): void
++ startProduction(timeNow: long): void
++ equals(obj: Object): boolean
++ reduceProductQuantity(qnt: int): boolean
++ getProductionDetails(): String
++ toString(): String
++ compareTo(industry: Industry): int
+
+}
+class PrimaryIndustry extends Industry {
+
+ + PrimaryIndustry(product: Product, type: IndustryType, location: Location, timeToProduce: int, maxProduction: int)
+ + startProducing(currentTime: int): String
+ + updateProduction(currentTime: long): String
+ + toString(): String
+
+ }
+class Port extends Industry {
+
+- importedProducts: List<ProductType>
+- productToConsume: ConsumedProducts
+- storage: List<Product>
+
++ Port(product: Product, importedProducts: List<ProductType>, location: Location, timeToProduce: int, maxProduction: int)
++ getProductToConsume(): ConsumedProducts
++ getImportedProducts(): List<ProductType>
++ receiveCargo(cargo: ArrayList<Cargo>): void
++ getProductionDetails(): String
++ toString(): String
+# startProducing(currentTime: int): String
++ updateProduction(currentTime: long): String
+
+- setProductToConsume(p: Product): void
+- getMaxProduction(): int
+}
+
+class TransformingIndustry extends Industry {
+
+- productToConsume: ConsumedProducts
+- manyProducing: int
+- storage: List<Product>
+
++ TransformingIndustry(product: Product, type: IndustryType, location: Location, timeToProduce: int, maxProduction: int)
++ receiveCargo(cargo: ArrayList<Cargo>): void
++ updateProduction(currentTime: long): String
++ startProducing(currentTime: int): String
++ hasEnoughProducts(): boolean
++ getProductionDetails(): String
++ quantityNeededOfProduct(product: ProductType): int
++ addProductsToBeConsumed(products: ArrayList<Product>): void
++ toString(): String
+
+- setProductToConsume(p: Product): void
+- productsInStorageOfType(productType: ProductType): int
+}
+
+
+class ConsumedProducts {
+
+- products: ArrayList<Product>
+
++ ConsumedProducts(product: Product)
++ addProduct(product: Product): void
++ getProducts(): ArrayList<Product>
++ equals(toCompare: ArrayList<Product>): boolean
++ listProducts(): String
++ gtCs(): ArrayList<Product>
+
+}
+class Product {
+- productType: ProductType
+- productValue: double
+- timeToProduce: int
+- productName: String
+
++ Product(productType: ProductType)
++ changeProductValue(multiplier: double): void
++ toString(): String
++ printProducts(): void
++ getProductType(): ProductType
++ getAllProducts(): List<String>
++ valueMultiplier(productName: String, multiplier: double): void
++ getProductValue(): double
++ getProductName(): String
++ getTimeToProduce(): int
++ setTimeToProduce(timeToProduce: int): void
++ equals(obj: Object): boolean
++ hashCode(): int
+}
+
+class Location {
+
+- position: Position
+
++ Location(position: Position)
++ getPosition(): Position
++ equals(obj: Object): boolean
++ compareTo(o: Location): int
+
+}
+
+class PositionRandomizer {
+
+- random: Random
+- simulator: Simulator
+- offsetX: int
+- offsetY: int
+
++ getRandomPositionAround(center: Position): Position
+
+}
+
+class Position {
+
+- x: int
+- y: int
+- simulator: Simulator
+
++ Position(x: int, y: int)
+- isValidPosition(x: int, y: int): boolean
++ getX(): int
++ getY(): int
++ equals(obj: Object): boolean
++ compareTo(pos: Position): int
++ hashCode(): int
++ toString(): String
+
+}
+
+class HouseBlock {
+
+- MAX_BLOCKS: int
+- position: Position
+- location: Location
+- simulation: Simulation
+- simulator: Simulator
+
++ HouseBlock(location: Location)
++ isValid(count: int): boolean
++ addPosition(posX: int, posY: int): void
++ getPosition(): Position
++ getLocation(): Location
++ toString(): String
+
+}
+
+class InfluenceArea {
+
+- m_Positions: ArrayList<Position>
+
++ getArea(): ArrayList<Position>
++ addPosition(position: Position): boolean
+
+}
+
+class RailwayLine {
+
+- COST_DISTANCE_MONEY_CONVERSION: double
+- trackType: TrackType
+- railType: RailType
+- station1: StationType
+- station2: StationType
+- distance: double
+
++ RailwayLine(station1: StationType, station2: StationType, railType: RailType, trackType: TrackType, distance: double)
++ getTrackType(): TrackType
++ getRailType(): RailType
++ getStation1(): StationType
++ getStation2(): StationType
++ getDistance(): double
++ compareTo(other: RailwayLine): int
++ toString(): String
++ static calculateDistBetweenStations(st1: StationType, st2: StationType, scale: int): double
++ static calculatePrice(distance: double, pricePerUnit: double): double
+
+}
+
+
+class RailwayLines {
+
+- railwayLines: ArrayList<RailwayLine>
+
++ RailwayLines()
++ getManyRailwayLines(): int
++ addRailwayline(rL: RailwayLine): void
++ removeRailwayline(rL: RailwayLine): void
++ getRailwayLines(): ArrayList<RailwayLine>
++ getRailwayLine(i: int): RailwayLine
+
+}
+
+
+class Route {
+
+- trips: List<Trip>
+- timeStart: long
+
++ Route(trips: List<Trip>)
++ getTrips(): List<Trip>
++ updateStartTimePause(timeNow: long): void
++ toString(): String
++ startProduction(timeNow: Long): void
++ updateStatus(currentTime: long): String
+
+}
+
+class Route {
+
+- trips: List<Trip>
+- timeStart: long
+
++ Route(trips: List<Trip>)
++ getTrips(): List<Trip>
++ updateStartTimePause(timeNow: long): void
++ toString(): String
++ startProduction(timeNow: Long): void
++ updateStatus(currentTime: long): String
+
+}
+
+
+class TimeRestrictions {
+- startYear: int
+- endYear: int
+
++ TimeRestrictions(startYear: int, endYear: int)
++ getStartYear(): int
++ getEndYear(): int
++ isValidYear(startYear: int, endYear: int): boolean
+}
+
+
+class HistoricalRestrictions {
+- productRestrictions: Map<String, ProductRestriction>
+- unavailableProducts: List<String>
+
++ addProductRestriction(productName: String, timeToProduce: int, multiplier: double): void
++ markAsUnavailable(productName: String): void
++ removeProductRestriction(productName: String): void
++ getProductRestriction(productName: String): ProductRestriction
++ isProductAvailable(productName: String): boolean
++ getAllProductsWithRestrictions(): List<String>
++ getUnavailableProducts(): List<String>
+}
+
+
+class PortBehaviour {
+- importedProducts: List<ProductType>
+- exportedProduct: ProductType
+
++ PortBehaviour(importedProducts: List<ProductType>, exportedProduct: ProductType)
++ getImportedProducts(): List<ProductType>
++ getExportedProduct(): ProductType
+}
+
+class TechnologyRestriction {
+- techList: List<TechnologyType>
++ TechnologyRestriction(techList: List<TechnologyType>)
++ getTechList(): List<TechnologyType>
+}
+
+class Simulation {
+- instance: Simulation (static)
+- currentScenario: Scenario
+- currentMap: Map
+- timeCounter: TimeCounter
+- Simulation(selectedScenario: Scenario)
+- Simulation()
+- clean(): void
+- refreshOldScenario(): void
++ getInstance(selectedScenario: Scenario): Simulation (static)
++ getInstance(): Simulation (static)
++ setSimulation(timeCounter: TimeCounter): void
++ getCurrentMap(): Map
++ getCurrentScenario(): Scenario
++ getLocationRepository(): LocationRepository
++ getRailwaylineRepository(): RailwaylineRepository
++ getIndustryRepository(): IndustryRepository
++ getCityRepository(): CityRepository
++ getTrainRepository(): TrainRepository
++ getStationRepository(): StationRepository
++ getRailRepository(): RailwaylineRepository
++ getSimulation(): TimeCounter
++ getRouteRepository(): RouteRepository
++ getTripRepository(): TripRepository
+}
+
+class TimeCounter {
+- CONVERSION_SEC_YEARS: int = 60
+- timePausedStart: long
+- isPaused: boolean
+- timeStarted: long
+- startYear: int
+- endYear: int
+- currentYear: int
++ TimeCounter(startYear: int, endYear: int)
++ pause(): String
++ play(): String
+- refreshTimeAfterPause(repo: Simulation, timeDiff: long): void
++ refresh(repo: Simulation): void
++ refreshCurrentYear(): void
+- endSimulation(): void
++ startSimulation(industryRepository: IndustryRepository, routeRepository: RouteRepository, cityRepository: CityRepository): void
+- refreshStations(stations: ArrayList<StationType>): void
+- refreshIndustries(industries: ArrayList<Industry>): void
+- refreshRoutes(routes: List<Route>): void
+- refreshCities(cities: ArrayList<City>): void
+- refreshTrips(trips: List<Trip>): void
++ getCurrentYear(): int
++ getEndYear(): int
+
+}
+
+abstract class StationType {
+- name: String
+- area: InfluenceArea
+- location: Location
+- railwayLines: RailwayLines
+- acquiredBuildings: Buildings
+- inArea: Map<Position, Object>
+- availableProducts: ArrayList<Product>
+- validIndustries: ArrayList<Industry>
+- validHouseBlocks: ArrayList<HouseBlock>
+- validCities: ArrayList<City>
+- storedProducts: Map<Product, Integer>
+- MAIL_PRODUCT: Product {static final}
+- PEOPLE_PRODUCT: Product {static final}
++ StationType(name: String, location: Location)
++ initArea(maxHeight: int, maxWidth: int): void
+# createArea(maxHeight: int, maxWidth: int): InfluenceArea
++ listAllStationsConnectedTo(): void
++ addRailwayLines(line: RailwayLine): void
++ getNextStation(rail: RailwayLine): StationType
++ getLocation(): Location
++ getName(): String
++ getRailwayLines(): RailwayLines
++ getManyRailwayLines(): int
++ getObjectsInArea(): Map<Position,Object>
++ getInfo(): String
++ getAcquiredBuildings(): Buildings
++ getArea(): InfluenceArea
++ setObjectsInArea(inArea: Map<Position,Object>): void
++ setAcquiredBuildings(acquiredBuildings: Buildings): void
++ setRailwayLines(railwayLines: RailwayLines): void
++ getAvailableProducts(): List<Product>
++ getAvailableQuantityForProduct(product: Product): int
++ addProductsToStorage(product: Product, quantity: int): void
++ getStoredQuantity(product: Product): int
++ removeProductsFromStorage(product: Product, quantity: int): boolean
++ listOfAvailableProducts(): String
++ productsTransformation(): void
++ equals(obj: Object): boolean
++ hashCode(): int
++ toString(): String
+}
+
+class Building {
+- buildingType: BuildingType
+- moneyMultiplier: double
+- name: String
++ Building(buildingType: BuildingType)
++ getName(): String
++ getMoneyMultiplier(): double
++ getBuildingType(): BuildingType
++ toString(): String
+}
+
+class Buildings {
+- acquiredBuildings: ArrayList<Building>
++ Buildings()
++ addBuilding(building: String): void
++ removeBuilding(building: Building): void
+- removeBuildingByType(type: BuildingType): void
++ existsBuildingType(type: BuildingType): boolean
++ existsTelegraph(): boolean
++ existsSmallVersion(requiredBuilding: Building): boolean
++ existsSmallVersion(requiredBuilding: String): boolean
++ getAcquiredBuildings(): ArrayList<Building>
++ getAvailableBuildings(currentYear: int): String
+}
+
+class Station extends StationType {
+- cardinalPosition: String
++ Station(name: String, cardinalPosition: String, location: Location, maxHeight: int, maxLength: int)
++ getInfo(): String
++ toString(): String
++ compareTo(stationType: StationType): int
+# createArea(maxHeight: int, maxWidth: int): InfluenceArea
+- addPositions(centerX: int, centerY: int, maxHeight: int, maxWidth: int): InfluenceArea
+- getPositionsPerCardinalPosition(): int[][]
+}
+
+class Terminal extends StationType {
+- SIZE: int = 5
++ Terminal(name: String, location: Location, maxHeight: int, maxWidth: int)
++ toString(): String
++ compareTo(stationType: StationType): int
+# createArea(maxHeight: int, maxWidth: int): InfluenceArea
+}
+
+class Depot extends StationType {
+- SIZE: int = 3
++ Depot(name: String, location: Location, maxHeight: int, maxWidth: int)
+# createArea(maxHeight: int, maxWidth: int): InfluenceArea
++ toString(): String
++ compareTo(stationType: StationType): int
+}
+
+class Train {
+- id: int
+- locomotive: Locomotive
+- whereItIs: String
+- cargo: ArrayList<Cargo>
++ Train(model: LocomotiveModel, id: int)
++ getCargo(): ArrayList<Cargo>
++ getId(): int
++ getWhereItIs(): String
++ getLocomotive(): Locomotive
++ isTripPossible(departure: StationType, arrival: StationType): int
++ toString(): String
+}
+
+class Locomotive {
+- model: LocomotiveModel
+- type: LocomotiveType
+- topSpeed: int
+- sellPrice: int
++ Locomotive(model: LocomotiveModel)
++ static createLocomotive(model: LocomotiveModel): Locomotive
++ getLocomotiveType(): LocomotiveType
++ getStartYear(): int
++ getTopSpeed(): double
++ getAcquisitionPrice(): double
++ getModel(): LocomotiveModel
++ getName(): String
++ toString(): String
+}
+
+class Cargo {
+- product: Product
+- quantity: int
+- cargoValue: double
++ Cargo(product: Product, quantity: int)
++ getCargoValue(): double
++ getProduct(): Product
++ getQuantity(): int
+
+}
+
+class Budget {
+
+- funds: double
+
++ Budget(value: double)
++ getFunds(): double
++ addFunds(value: double): void
++ subtractFunds(value: double): void
++ hasEnoughFunds(value: double): boolean
++ purchase(amount: double): void
+
+}
+
+class City {
+
+- simulation: Simulation
+- name: String
+- id: String
+- houseBlocksList: List<HouseBlock>
+- location: Location
+- maxPassengers: int
+- maxMail: int
+- passengersQnt: int
+- mailQnt: int
+
++ City(name: String, location: Location, maxPassengers: int, maxMail: int, consumedProduct: ProductType)
+- generatePassenger(): int
+- generateMail(): int
++ getName(): String
++ getHouseBlocks(): List<HouseBlock>
++ createHouseBlockList(): void
++ createHouseBlock(positionX: int, positionY: int): void
++ getPosition(): Position
++ getLocation(): Location
++ getMailQnt(): int
++ getPassengersQnt(): int
++ updateStatus(timeNow: long): String
++ produce(): String
+
+}
+
+class Map {
+- length: int
+- height: int
+- scale: int
+- name: String
+- locationRepository: LocationRepository
+
++ Map(name: String, length: int, height: int, scale: int)
++ createLocation(position: Position): Location
++ createCity(name: String, location: Location, maxPassengers: int, maxMail: int, consumedProduct: ProductType): City
++ getLength(): int
++ getHeight(): int
++ getName(): String
++ getScale(): int
++ setName(name: String): void
++ getMapArea(): int
++ toString(): String
++ getlocationRepository(): LocationRepository
+
+}
+
+class Trip {
+
+- train: Train
+- origin: StationType
+- destination: StationType
+- railwayLine: RailwayLine
+- cargoList: List<Cargo>
+- cargoMode: CargoMode
+- status: TripStatus
+
++ Trip(train: Train, origin: StationType, destination: StationType, railwayLine: RailwayLine, cargoList: List<Cargo>, cargoMode: CargoMode, status: TripStatus)
++ getDistance(): double
++ getTrain(): Train
++ getOrigin(): StationType
++ getDestination(): StationType
++ getRailwayLine(): RailwayLine
++ getCargoList(): List<Cargo>
++ getCargoMode(): CargoMode
++ getStatus(): TripStatus
++ setStatus(status: TripStatus): void
++ completeTrip(trip: Trip): void
++ toString(): String
+
+}
+
+enum ProductType{
+GRAINS,
+VEGETABLES,
+COFFEE,
+RUBBER,
+WOOL,
+IRON,
+COAL,
+STEEL,
+BREAD,
+CAR,
+CLOTHING,
+PEOPLE,
+MAIL,
+
++ productValue : double
++ productName : String
++ timeToProduce : int
+}
+
+enum BuildingType {
+CAFFEE_SMALL,
+CAFFEE_LARGE,
+TELEGRAPH,
+TELEPHONE,
+CUSTOMS,
+POST_OFFICE,
+HOTEL_SMALL,
+HOTEL_LARGE,
+SILO,
+LIQUID_STORAGE,
+
++ price : double
++ name : String
++ startYear : int
++ moneyMultiplier : double
+}
+
+enum StationTypes{
+DEPOT,
+STATION,
+TERMINAL,
+
++ name : String
++ price : double
+}
+
+enum Upgrade{
+STATIONTOTERMINAL,
+DEPOTTOTERMINAL,
+DEPOTTOSTATION,
+
++price : double
++name : String
+}
+
+enum TechnologyType{
+DIESEL,
+ELECTRIC,
+STEAM,
+}
+
+enum TripStatus {
+    WAITING_FOR_CARGO,
+    READY,
+    IN_PROGRESS,
+    COMPLETED,
+    DELIVERED
+}
+
+enum TrackType{
+SINGLE_RAIL,
+DOUBLE_RAIL,
+
++ costMultiplier : double
+}
+
+
+enum TrackType{
+ELECTRIFIED,
+NON_ELECTRIFIED,
+
++ startYear : int
++ name : String
++ price : double
+}
+
+enum IndustrySector{
+PRIMARY,
+TRANSFORMINGs,
+MIXED,
+
++ toString
+}
+
+enum IndustryType{
+FARM
+MINE
+BAKERY
+STEEL_MILL
+TEXTILE
+AUTOMOBILE
+PORT
+
++ sector : IndustrySector
+}
+
+
+Simulator "1" *-- "1" ScenarioRepository
+Simulator "1" *-- "1" MapRepository
+Map "1" *-- "1" LocationRepository
+
+ScenarioRepository "1" *-- "0..*" Scenario
+MapRepository "1" *-- "0..*" Map
+
+IndustryRepository "1" *-- "0..*" Industry
+TrainRepository "1" *-- "0..*" Train
+StationRepository "1" *-- "0..*" Station
+RailwaylineRepository "1" *-- "0..*" RailwayLine
+RouteRepository "1" *-- "0..*" Route
+TripRepository "1" *-- "0..*" Trip
+InfluenceAreaRepository "1" *-- "0..*" InfluenceArea
+CityRepository "1" *-- "0..*" City
+
+Scenario "1" *-- "1" IndustryRepository
+Scenario "1" *-- "1" TrainRepository
+Scenario "1" *-- "1" StationRepository
+Scenario "1" *-- "1" RailwaylineRepository
+Scenario "1" *-- "1" RouteRepository
+Scenario "1" *-- "1" TripRepository
+Scenario "1" *-- "1" InfluenceAreaRepository
+Scenario "1" *-- "1" CityRepository
+
+Scenario "1" *-- "1" Map
+Scenario "1" *-- "1" TimeRestrictions
+Scenario "1" *-- "1" HistoricalRestrictions
+Scenario "1" *-- "1" TechnologyRestriction
+Scenario "1" *-- "1" PortBehaviour
+Scenario "1" *-- "1" Budget
+
+LocationRepository "1" *-- "0..*" Location
+Location *-- Position
+
+City "1" *-- "1" Location
+Station "1" *-- "1" Location
+Industry "1" *-- "1" Location
+HouseBlock *-- "0..*" Location
+
+Building "1" *-- "1" BuildingType
+Buildings "1" o-- "1..*" Building
+
+StationRepository "1" *-- "1" StationType
+StationType "1" *-- "1" StationTypes
+StationType "1" *-- "1" Buildings
+StationType "1" *-- "1" RailwayLines
+StationType "1" o-- "1" Upgrade
+
+Industry "1" *-- "1" IndustrySector
+Industry "1" *-- "1" IndustryType
+Industry "1" *-- "1" Product
+
+TransformingIndustry  "1" *-- "1" ConsumedProducts
+Port  "1" o-- "1" ConsumedProducts
+
+Product"1" *-- "1" ProductType
+Simulation "1" *-- "1" TimeCounter
+Simulation "1" *-- "1" Scenario
+Simulation "1" *-- "1" Map
+
+InfluenceArea "1" *-- "1..*" Position
+
+RailwayLine "1" *-- "1" TrackType
+RailwayLine "1" *-- "1" RailType
+
+Locomotive "1" *-- "1" LocomotiveModel
+Locomotive "1" *-- "1" TechnologyType
+
+Trip o-- TripStatus
+Trip "1" o-- "1" Train
+Trip "1" o-- "2" StationType : connects
+Trip "1" o-- "2" RailwayLine
+Route "1" o-- "1..*" Trip
+
+
+Train "1" *-- "1" Locomotive
+Train "1" o-- "0..*" Cargo
+
+City "1" *-- "1" HouseBlock
+City "1" -- "1" PositionRandomizer : uses
+
+@enduml

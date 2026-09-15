@@ -1,0 +1,43 @@
+@startuml
+title US012 - create a simulator (CD)
+
+class PlayerMenuUI {
+ + Play(): void
+ + Pause(): void
+}
+
+class PlayerMenuController{
+ + handleMenu(which: int): void
+}
+
+class TimeCounter{
+  - SECONDS_TO_YEARS_RATIO : int
+  - timePausedStart : long
+  - isPaused : boolean
+  - timeStarted : long
+  - currentYear : int
+  - startYear : int
+  - endYear : int
+
+
+  + refresh() :  void
+  + pause() :  String
+  + play() : String
+}
+
+class Simulation {
+  - instance : Simulation
+  - simulation : Simulation
+
+  + getIntance() : Simulation
+  + getTimeCounter(): TimeCounter
+}
+
+PlayerMenuUI ..> PlayerMenuController : uses
+PlayerMenuController ..> Simulation : "access"
+PlayerMenuController ..> TimeCounter : "access"
+
+Simulation --> TimeCounter : pauses
+
+
+@enduml

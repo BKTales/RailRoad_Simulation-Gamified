@@ -1,0 +1,51 @@
+edge.eletrified{
+    shape: line;
+    fill-mode: plain;
+    fill-color: yellow;
+    size: 2px;
+}
+
+edge.nonEletrified{
+    shape: line;
+    fill-mode: plain;
+    fill-color: #0018ff;
+    size: 2px;
+}
+
+node {
+    size: 20px;
+    fill-color: #ffffff;
+    text-visibility-mode: normal;
+    text-color: #f500fd;
+    text-size: 20px;
+    text-alignment: above;
+    z-index: 3;
+}
+
+node.atual {
+    size: 20px;
+    fill-color: #00ff3c;
+    text-visibility-mode: normal;
+    text-color: #f500fd;
+    text-size: 20px;
+    text-alignment: above;
+    z-index: 3;
+}
+
+node.start {
+    size: 20px;
+    fill-color: #00ff3c;
+    text-visibility-mode: normal;
+    text-color: #f500fd;
+    text-size: 20px;
+    text-alignment: above;
+    z-index: 3;
+}
+
+graph {
+    fill-color: black;
+}
+
+edge.colorline{
+    fill-color: #ff0000;
+}

@@ -1,0 +1,71 @@
+@startuml
+title US013 - Verify Possible Trip
+
+class VerifyTrip{
+- DEPOT : int
+- STATION : int
+- TERMINAL : int
+- ELECTRIC : int
+- DEPOT_CHAR : char
+- STATION_CHAR : char
+- TERMINAL_CHAR : char
+- ignoreNormalRails : boolean
+
+- getStationIndex(stations: String[], name: String) : int
+- convertStationTypesToChars(stationTypes: int[]) : char[]
+- multiplyBooleanMatrices(a: boolean[][], b: boolean[][]) : boolean[][]
+- addBooleanMatrices(matrix1: boolean[][], matrix2: boolean[][]) : boolean[][]
+- initializeAdjacencyMatrix(stations: String[], connections: String[][]) : boolean[][]
+- connectionToStation(stationName: String, stations: String[], connections: String[][]) : int[]
++ isTransitive(matrix: boolean[][]) : boolean
++ areAllTripsPossible(matrix: boolean[][]) : boolean
++ isOfType(type: char, stationTypes: int[]) : boolean
++ multiplyNTimes(adjacentMatrix: boolean[][], size: int) : void
++ verifyPossibilityOfAllStations(lineFile: File, stations: String[]) : int
++ areAllOfTypeOn(matrix: boolean[][], stations: String[], stationTypes: int[]) : boolean
++ verifyTripStationType(lineFile: File, stationTypes: int[], stations: String[], trainType: int) : int
++ verifyTripTwoStations(lineFile: File, station1: String, station2: String, stations: String[], trainType: int) : int
+}
+
+class VerifyTripController {
+- stationFile : File
+- lineFile : File
+
++ getStations() : String[]
++ getLineFile(whichScenario : int) : File
++ getStationFile(whichScenario : int) : File
++ getStationsOfType(typesChar : char[]) : String[]
++ runStationTypes(stationTypes : int[], stations : String[], trainType : int) : int
++ runTwoStations(station1 : String, station2 : String, stations : String[], trainType : int) : int
+}
+
+class readCsvs{
+  + readCSVTo2DArray(file) : String[][]
+  + readCSVTo2DArrayForTypes(file, types) : String[][]
+  + getAllStations(stationFile) : String[]
+  + getAllStationsOfTypes(stationFile, types) : String[]
+}
+
+class VerifyTripUi {
+- typeOfTrain : int
+- stations : String[]
+- depStation : String
+- stationTypes : int[]
+- arriStation : String
+- isTwoStations : boolean
+
++ run() : void
+- getWhichScenario() : int
+- getTrainType() : void
+- selectStations() : void
+- selectStationTypes() : void
+- getStationsOrStationType() : void
+- getWantedStationsTypes(typesInt : int[]) : void
+- isValidInput(input : String, max : int, min : int) : boolean
+}
+
+VerifyTripUi --> VerifyTripController
+VerifyTripController --> VerifyTrip
+VerifyTrip --> readCsvs : uses
+
+@enduml

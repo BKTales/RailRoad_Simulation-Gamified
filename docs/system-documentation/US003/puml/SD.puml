@@ -1,0 +1,96 @@
+@startuml
+title US003 (SD) - Create a City
+
+autonumber
+
+actor User
+participant CityEditorUI
+participant CityEditorController
+participant CityRepository
+participant LocationRepository
+participant Simulator
+participant City
+participant Map
+participant ProductRandomizer
+participant ProductType
+
+== Launch UI ==
+User -> CityEditorUI: run()
+activate CityEditorUI
+
+CityEditorUI --> CityEditorUI: readCityName()
+User -> CityEditorUI: Indicates name
+CityEditorUI --> CityEditorUI: readCityX()
+User -> CityEditorUI: Indicates coordinate (x)
+CityEditorUI --> CityEditorUI: readCityY()
+User -> CityEditorUI: Indicates coordinate (y)
+CityEditorUI --> CityEditorUI: readMaxPassengers()
+User -> CityEditorUI: Indicates number of max passengers
+CityEditorUI --> CityEditorUI: readMaxMail()
+User -> CityEditorUI: Indicates number of max mail
+
+CityEditorUI -> CityEditorController: getAvailableProducts()
+activate CityEditorController
+CityEditorController -> ProductType: .values()
+deactivate CityEditorController
+
+CityEditorUI --> CityEditorUI: readProduct()
+User -> CityEditorUI: Select product list
+
+== Create City ==
+CityEditorUI -> CityEditorController: createCity()
+activate CityEditorController
+
+CityEditorController -> Map: createLocation(position)
+activate Map
+Map --> LocationRepository: getLocation()
+activate LocationRepository
+LocationRepository -> Map: Location
+deactivate LocationRepository
+deactivate Map
+
+CityEditorController -> Map: createCity()
+activate Map
+Map --> Simulator: addCity()
+activate Simulator
+Simulator --> CityRepository: addCity()
+activate CityRepository
+deactivate CityRepository
+deactivate Simulator
+deactivate Map
+deactivate CityEditorController
+
+== House Block Placement ==
+CityEditorUI --> CityEditorUI: readHouseBlocksQuantity()
+        User -> CityEditorUI: Indicate houseblock quantity
+CityEditorUI --> CityEditorUI: readPositioningMethod()
+        User -> CityEditorUI: Indicate houseblock positioning method
+
+loop House Block Quantity
+    alt Placement Type - MANUAL
+        CityEditorUI --> CityEditorUI: readHouseBlockX()
+                User -> CityEditorUI: Indicate houseblock coordinate (x)
+        CityEditorUI --> CityEditorUI: readHouseBlockY()
+                User -> CityEditorUI: Indicate houseblock coordinate (y)
+        CityEditorUI -> CityEditorController: createCityBlock(city, houseBlockX, houseBlockY)
+        activate CityEditorController
+        CityEditorController -> City: createHouseBlock()
+        deactivate CityEditorController
+    else Placement Type - NORMAL (Random)
+        CityEditorUI --> CityEditorUI: generateHouseBlocksAutomatically()
+        CityEditorUI -> ProductRandomizer: getRandomPosition()
+        activate ProductRandomizer
+        ProductRandomizer --> CityEditorUI: randomPosition(x,y)
+        deactivate ProductRandomizer
+        CityEditorUI -> CityEditorController: createCityBlock(city, x, y)
+        activate CityEditorController
+        CityEditorController -> City: createHouseBlock()
+        deactivate CityEditorController
+    end
+end
+
+CityEditorUI --> User: handleMenu()
+
+deactivate CityEditorUI
+
+@enduml

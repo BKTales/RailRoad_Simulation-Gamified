@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="pt.ipp.isep.dei.application.UserMenus.EditorMapMenuController"
+      prefHeight="800.0" prefWidth="1200.0"
+      styleClass="box" stylesheets="@../css/PlayerMenu.css">
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+
+    <HBox spacing="10" VBox.vgrow="ALWAYS">
+
+        <!-- Left Buttons Pane -->
+        <VBox spacing="10" fx:id="buttonsPane" styleClass="left-pane" HBox.hgrow="NEVER">
+            <Button fx:id="btn1"  styleClass="button"/>
+            <Button fx:id="btn2"  styleClass="button"/>
+            <Button fx:id="btn3"  styleClass="button"/>
+            <Button fx:id="btn4"  styleClass="button"/>
+        </VBox>
+
+        <!-- Image and Label Area -->
+        <!--        <StackPane styleClass="image-pane" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">-->
+        <!--            <ImageView fx:id="imageView" preserveRatio="true" fitWidth="800" fitHeight="600"/>-->
+        <!--            <Label fx:id="infoLabel" text="Area that shows a text" styleClass="info-label"-->
+        <!--                   StackPane.alignment="TOP_RIGHT"/>-->
+        <!--        </StackPane>-->
+        <StackPane fx:id="graphContainer"
+                   prefWidth="800" prefHeight="600"
+                   VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"
+                   style="-fx-background-color: transparent;
+                  -fx-background-radius: 15;
+                  -fx-border-radius: 15;
+                  -fx-border-color: #ccc;
+                  -fx-border-width: 1;
+                  -fx-padding: 0;" />
+    </HBox>
+</VBox>
+

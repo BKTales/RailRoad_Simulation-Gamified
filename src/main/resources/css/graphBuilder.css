@@ -1,0 +1,57 @@
+edge{
+    shape: line;
+    stroke-mode: dashes;
+}
+
+
+edge.electrifiedSingleTrack {
+    fill-color: yellow;
+    size: 2px;
+    z-index: 0;
+}
+
+edge.electrifiedDoubleTrack {
+    fill-color: yellow;
+    size: 4px;
+    z-index: 0;
+}
+
+edge.nonElectrifiedSingleTrack {
+    fill-color: #0018ff;
+    size: 2px;
+    z-index: 0;
+}
+
+edge.nonElectrifiedDoubleTrack {
+    fill-color: #0018ff;
+    size: 4px;
+    z-index: 0;
+}
+
+node {
+    text-alignment: under;
+    text-offset: 20px, -5px;
+    text-color: black;
+    text-style: bold;
+    size: 20px;
+}
+
+node.station {
+    fill-mode: image-scaled;
+    fill-image: url("images/station.png");
+}
+
+node.industry {
+    fill-mode: image-scaled;
+    fill-image: url("images/industry.png");
+}
+
+node.city {
+    fill-mode: image-scaled;
+    fill-image: url("images/city.png");
+}
+
+node.house {
+    fill-mode: image-scaled;
+    fill-image: url("images/house.png");
+}

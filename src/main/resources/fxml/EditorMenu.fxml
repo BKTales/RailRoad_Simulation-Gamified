@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="pt.ipp.isep.dei.application.UserMenus.EditorMenuController"
+           prefHeight="800.0" prefWidth="1200.0"
+           stylesheets="@../css/PlayerMenu.css" styleClass="box"
+           fx:id="stackPane">
+
+
+    <VBox prefHeight="800.0" prefWidth="1000.0">
+        <HBox spacing="10" VBox.vgrow="ALWAYS">
+
+            <!-- Left Buttons Pane -->
+            <VBox spacing="10" fx:id="buttonsPane" styleClass="left-pane" HBox.hgrow="NEVER">
+                <Button fx:id="btn1"  styleClass="button"/>
+                <Button fx:id="btn2"  styleClass="button"/>
+                <Button fx:id="btn3"  styleClass="button"/>
+                <Button fx:id="btn4"  styleClass="button"/>
+                <Button fx:id="btn5"  styleClass="button"/>
+                <Button fx:id="btn6"  styleClass="button"/>
+            </VBox>
+
+            <!-- Image and Label Area -->
+            <!--        <StackPane styleClass="image-pane" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">-->
+            <!--            <ImageView fx:id="imageView" preserveRatio="true" fitWidth="800" fitHeight="600"/>-->
+            <!--            <Label fx:id="infoLabel" text="Area that shows a text" styleClass="info-label"-->
+            <!--                   StackPane.alignment="TOP_RIGHT"/>-->
+            <!--        </StackPane>-->
+
+        </HBox>
+    </VBox>
+</StackPane>
+

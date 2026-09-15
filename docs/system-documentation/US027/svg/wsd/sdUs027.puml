@@ -1,0 +1,49 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+actor Player
+
+activate getShortestWayUI
+
+Player -> getShortestWayUI: select the calculation of shortest way
+
+
+getShortestWayUI --> Player : ask for the scenario name
+deactivate getShortestWayUI
+Player -> getShortestWayUI: input the scenario name
+
+activate getShortestWayUI
+
+getShortestWayUI -> getShortestWayController : listStations()
+activate getShortestWayController
+		getShortestWayController -> readCsv: getStations(stationFile)
+		activate readCsv
+			readCsv -> getShortestWayController: stations
+		deactivate readCsv
+getShortestWayController --> getShortestWayUI  : station list
+deactivate getShortestWayController
+
+
+
+loop while user is selecting index
+getShortestWayUI --> Player : ask for the station index of which he \n wants to add to the path
+Player -> getShortestWayUI: input the station index
+end
+
+getShortestWayUI -> getShortestWayController : getShortestWay(array of indexes)
+activate getShortestWayController
+    getShortestWayController -> getShortestWay : getShortestWay(array of indexes)
+    activate getShortestWay
+        getShortestWay --> getShortestWayController : array of the stations Indexes
+    deactivate getShortestWay
+    getShortestWayController --> getShortestWayUI  : shortestWay
+deactivate getShortestWayController
+
+
+getShortestWayUI --> Player : Display of the shortest way
+
+
+
+
+@enduml

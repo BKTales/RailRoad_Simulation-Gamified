@@ -1,0 +1,42 @@
+@startuml
+
+title US012 - create a simulator (SD)
+
+autonumber
+actor Player
+activate Player
+
+	Player -> PlayerMenuUI: Play/Pause simulation
+	activate PlayerMenuUI
+
+
+		PlayerMenuUI -> PlayerMenuController : changeSimulationStatus(int status)
+		activate PlayerMenuController
+
+			PlayerMenuController -> Simulation : getInstance()
+			activate Simulation
+				Simulation --> PlayerMenuController : simulation
+			deactivate Simulation
+
+			PlayerMenuController -> "simulation:Simulation" : getTimeCounter()
+
+			activate "simulation:Simulation"
+				"simulation:Simulation" --> PlayerMenuController : TimeCounter
+			deactivate "simulation:Simulation"
+
+
+				PlayerMenuController -> TimeCounter : pause/pause()
+				activate TimeCounter
+					TimeCounter --> PlayerMenuController : Simulation updated status
+				deactivate TimeCounter
+
+
+			PlayerMenuController --> PlayerMenuUI : Simulation status
+
+		deactivate PlayerMenuController
+
+		PlayerMenuUI --> Player: Display simulation status
+
+	deactivate PlayerMenuUI
+
+@endum

@@ -1,0 +1,46 @@
+@startuml
+
+title US001 - Create a map (SSD)
+
+autonumber
+actor Editor
+
+activate Editor
+
+	Editor -> CreateMapUI: Select create map function
+
+		activate CreateMapUI
+    		CreateMapUI --> CreateMapUI : readName()
+    		CreateMapUI --> Editor: Ask for map name
+    	deactivate CreateMapUI
+    		Editor -> CreateMapUI: Give the map name
+    	activate CreateMapUI
+    		CreateMapUI --> CreateMapUI : validCharacters()
+    		CreateMapUI --> CreateMapUI : readHeight()
+    		CreateMapUI --> Editor: Ask for map height
+    	deactivate CreateMapUI
+    		Editor -> CreateMapUI: Give the map height
+
+    	activate CreateMapUI
+    		CreateMapUI --> CreateMapUI : readLength()
+    		CreateMapUI --> Editor: Ask for map length
+    	deactivate CreateMapUI
+    		Editor -> CreateMapUI: Give the map length
+
+    	activate CreateMapUI
+    		CreateMapUI --> CreateMapUI : readScale()
+    		CreateMapUI --> Editor: Ask for map scale
+    	deactivate CreateMapUI
+    		Editor -> CreateMapUI: Give the map scale
+
+        activate CreateMapUI
+    		CreateMapUI --> CreateMapUI : isValidInt(length)
+    		CreateMapUI --> CreateMapUI : isValidInt(height)
+    		CreateMapUI --> CreateMapUI : isValidInt(scale)
+    		CreateMapUI --> CreateMapUI : createMap()
+		    CreateMapUI --> Editor: Display map created confirmation
+	    deactivate CreateMapUI
+
+deactivate Editor
+
+@enduml

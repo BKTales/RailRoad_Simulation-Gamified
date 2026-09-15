@@ -1,0 +1,55 @@
+.root {
+    -fx-font-family: "Bronco";
+    -fx-font-size: 24 px;
+}
+
+.boxPlayer {
+    -fx-background-image: url('/images/backgroudPlayerMenu.png');
+    -fx-background-size: stretch;
+}
+
+/* Base button style */
+.button {
+    -fx-background-image: url('/images/btnBackground.png');
+    -fx-padding: 20 0 0 0;
+    -fx-background-size: stretch;
+    -fx-pref-width: 350px;
+    -fx-pref-height: 120px;
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0.5, 0, 1);
+}
+
+/* Hover effect */
+.button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.8), 10, 0.5, 0, 5);
+}
+
+/* Pressed effect */
+.button:pressed {
+    /*-fx-background-color: #2C5FA0;*/
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.8), 10, 0.5, 0, 5);
+}
+
+/* Optional: remove default focus border */
+.button:focused {
+    -fx-border-color: transparent;
+}
+
+.left-pane {
+    -fx-padding: 20;
+}
+
+.image-pane {
+    -fx-background-color: #1e1e1e;
+}
+
+.info-label {
+    -fx-background-color: #a17b7b;
+    -fx-text-fill: white;
+    -fx-padding: 5;
+}

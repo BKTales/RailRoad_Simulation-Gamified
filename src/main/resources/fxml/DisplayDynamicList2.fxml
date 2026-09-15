@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      stylesheets="@../css/styleReadInput.css" styleClass="box"
+      fx:controller="pt.ipp.isep.dei.utils.DisplayDynamicList2Controller" spacing="10" alignment="CENTER" style="-fx-padding: 20;">
+    <Label fx:id="messageLabel" text="====LIST OF PURCHASED TRAINS===="/>
+    <ListView fx:id="listView" maxHeight="500" maxWidth="750" VBox.vgrow="ALWAYS"
+              styleClass="rounded-list"/>
+    <Button text="OK" onAction="#handleClose"/>
+
+</VBox>
